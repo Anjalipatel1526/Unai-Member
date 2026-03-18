@@ -54,11 +54,11 @@ export const Plans = () => {
                             </div>
 
                             <div className="space-y-3 flex-1 mb-8">
-                                {plan.features.map((feat, i) => (
-                                    <div key={i} className="flex items-start gap-2.5">
+                                {plan.features && plan.features.map((feat: any, i: number) => (
+                                    <li key={i} className="flex items-center gap-3">
                                         <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                                         <span className="text-sm text-gray-700">{feat}</span>
-                                    </div>
+                                    </li>
                                 ))}
                             </div>
 
