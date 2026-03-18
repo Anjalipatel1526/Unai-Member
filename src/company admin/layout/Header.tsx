@@ -1,13 +1,23 @@
 import React from 'react';
-import { Search, Bell, User as UserIcon } from 'lucide-react';
+import { Search, Bell, User as UserIcon, Menu } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { useCompanyData } from '../data/CompanyContext';
 
-export function Header() {
+interface HeaderProps {
+    onOpenMobileMenu: () => void;
+}
+
+export function Header({ onOpenMobileMenu }: HeaderProps) {
     const { company } = useCompanyData();
     return (
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-100 bg-white/80 px-4 sm:px-6 backdrop-blur-md">
             <div className="flex flex-1 items-center gap-4">
+                <button
+                    onClick={onOpenMobileMenu}
+                    className="p-2 -ml-2 text-gray-500 hover:bg-gray-100 rounded-lg sm:hidden"
+                >
+                    <Menu size={24} />
+                </button>
                 <h1 className="text-xl font-semibold text-gray-900 hidden sm:block">
                     {company.name} Workspace
                 </h1>
