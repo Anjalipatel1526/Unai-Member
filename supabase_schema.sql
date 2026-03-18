@@ -16,6 +16,8 @@ CREATE TABLE public.clients (
     plan TEXT NOT NULL DEFAULT 'Basic',
     used_employees INT DEFAULT 0,
     limit_employees INT DEFAULT 50,
+    admin_email TEXT UNIQUE,
+    password TEXT,
     status TEXT DEFAULT 'Active', -- 'Active', 'Suspended', 'Trial'
     payment_status TEXT DEFAULT 'Paid', -- 'Paid', 'Pending', 'Failed', 'Overdue'
     joined_date DATE DEFAULT CURRENT_DATE,

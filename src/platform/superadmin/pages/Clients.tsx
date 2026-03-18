@@ -12,7 +12,8 @@ export const Clients = () => {
 
     const [formData, setFormData] = useState({
         name: '',
-        email: '',
+        admin_email: '',
+        password: '',
         plan: 'Basic',
         limit_employees: 50,
         isTrial: false,
@@ -53,6 +54,8 @@ export const Clients = () => {
         const newClient = {
             name: formData.name,
             logo_url: formData.name.substring(0, 2).toUpperCase(),
+            admin_email: formData.admin_email,
+            password: formData.password,
             plan: formData.plan,
             limit_employees: Number(formData.limit_employees),
             status: formData.isTrial ? 'Trial' : 'Active',
@@ -66,7 +69,7 @@ export const Clients = () => {
             alert("Error creating client: " + error.message);
         } else {
             setIsAddModalOpen(false);
-            setFormData({ name: '', email: '', plan: 'Basic', limit_employees: 50, isTrial: false });
+            setFormData({ name: '', admin_email: '', password: '', plan: 'Basic', limit_employees: 50, isTrial: false });
             fetchClients(); // Refresh data
         }
     };
@@ -211,9 +214,28 @@ export const Clients = () => {
                             type="email" required
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
                             placeholder="admin@company.com"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            value={formData.admin_email}
+                            onChange={(e) => setFormData({ ...formData, admin_email: e.target.value })}
                         />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Temporary Password</label>
+                        <div className="flex gap-2">
+                            <input
+                                type="text" required
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all font-mono text-sm"
+                                placeholder="Auto-generated"
+                                value={formData.password}
+                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                            />
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => setFormData({ ...formData, password: Math.random().toString(36).slice(-8).toUpperCase() })}
+                            >
+                                Generate
+                            </Button>
+                        </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>

@@ -1,7 +1,15 @@
 import React from 'react';
-import { Search, Bell, User } from 'lucide-react';
+import { Search, Bell, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export const Header = () => {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem('userAuth');
+        navigate('/login');
+    };
+
     return (
         <header className="h-16 bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-20 px-6 flex items-center justify-between shadow-sm">
             <div className="flex-1 max-w-lg">
@@ -23,13 +31,17 @@ export const Header = () => {
 
                 <div className="h-8 w-px bg-gray-200 mx-1"></div>
 
-                <button className="flex items-center gap-2 hover:bg-gray-50 p-1.5 pr-3 rounded-full border border-transparent hover:border-gray-200 transition-all focus:outline-none focus:ring-2 focus:ring-primary-100">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white ring-2 ring-white shadow-sm">
-                        <span className="text-sm font-semibold tracking-wide">SA</span>
+                <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 hover:bg-red-50 p-1.5 pr-3 rounded-full border border-transparent hover:border-red-100 transition-all focus:outline-none focus:ring-2 focus:ring-red-100 group"
+                    title="Logout"
+                >
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white ring-2 ring-white shadow-sm group-hover:from-red-500 group-hover:to-red-600 transition-all">
+                        <LogOut className="w-4 h-4" />
                     </div>
                     <div className="flex flex-col items-start leading-tight">
-                        <span className="text-sm font-semibold text-gray-900">Super Admin</span>
-                        <span className="text-xs font-medium text-gray-500">Platform Owner</span>
+                        <span className="text-sm font-semibold text-gray-900 group-hover:text-red-700 transition-colors">Super Admin</span>
+                        <span className="text-xs font-medium text-gray-500 group-hover:text-red-500 transition-colors">Logout</span>
                     </div>
                 </button>
             </div>

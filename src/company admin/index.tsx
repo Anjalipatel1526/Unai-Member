@@ -1,0 +1,12 @@
+export { AdminLayout } from './layout/AdminLayout';
+export { Dashboard as CompanyDashboard } from './pages/Dashboard';
+export { Employees as CompanyEmployees } from './pages/Employees';
+export { EmployeeProfile } from './pages/EmployeeProfile';
+export { Attendance as CompanyAttendance } from './pages/Attendance';
+export { LeaveManagement } from './pages/LeaveManagement';
+export { Payroll as CompanyPayroll } from './pages/Payroll';
+export { Performance as CompanyPerformance } from './pages/Performance';
+export { Documents as CompanyDocuments } from './pages/Documents';
+export { ExitManagement } from './pages/ExitManagement';
+export { Reports as CompanyReports } from './pages/Reports';
+export { Settings as CompanySettings } from './pages/Settings';
