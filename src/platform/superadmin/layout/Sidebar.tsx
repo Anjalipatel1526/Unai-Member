@@ -43,7 +43,7 @@ export const Sidebar = () => {
                 {!isCollapsed && (
                     <div className="flex items-center gap-2 font-bold text-xl text-gray-900 tracking-tight animate-in fade-in zoom-in-95 duration-200">
                         <Blocks className="w-6 h-6 text-primary-600" />
-                        <span>ZohoClone</span>
+                        <span>Unai Member</span>
                     </div>
                 )}
                 {isCollapsed && (
