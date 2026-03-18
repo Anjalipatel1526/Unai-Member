@@ -6,9 +6,9 @@ import { MessageSquare, LayoutTemplate, Clock, AlertCircle } from 'lucide-react'
 
 export const Support = () => {
     const metaCards = [
-        { title: 'Open Tickets', value: '45', icon: MessageSquare, color: 'text-blue-600', bg: 'bg-blue-50' },
-        { title: 'Avg. Resolution Time', value: '2.4h', icon: Clock, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-        { title: 'Escalated Issues', value: '12', icon: AlertCircle, color: 'text-red-600', bg: 'bg-red-50' },
+        { title: 'Open Tickets', value: '0', icon: MessageSquare, color: 'text-blue-600', bg: 'bg-blue-50' },
+        { title: 'Avg. Resolution Time', value: '0h', icon: Clock, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+        { title: 'Escalated Issues', value: '0', icon: AlertCircle, color: 'text-red-600', bg: 'bg-red-50' },
     ];
 
     const columns = [

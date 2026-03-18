@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { MainLayout } from './platform/superadmin/layout/MainLayout';
 import { Dashboard } from './platform/superadmin/pages/Dashboard';
 import { Clients } from './platform/superadmin/pages/Clients';
-import { Plans } from './platform/superadmin/pages/Plans';
+
 import { Billing } from './platform/superadmin/pages/Billing';
 import { Support } from './platform/superadmin/pages/Support';
 import { Monitoring } from './platform/superadmin/pages/Monitoring';
@@ -17,7 +17,6 @@ function App() {
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="clients" element={<Clients />} />
-          <Route path="plans" element={<Plans />} />
           <Route path="billing" element={<Billing />} />
           <Route path="support" element={<Support />} />
           <Route path="monitoring" element={<Monitoring />} />

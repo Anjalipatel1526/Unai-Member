@@ -20,7 +20,6 @@ import {
 const menuItems = [
     { name: 'Dashboard', path: '/', icon: LayoutDashboard },
     { name: 'Clients', path: '/clients', icon: Building2 },
-    { name: 'Subscription Plans', path: '/plans', icon: CreditCard },
     { name: 'Revenue & Billing', path: '/billing', icon: Receipt },
     { name: 'Support Tickets', path: '/support', icon: LifeBuoy },
     { name: 'System Monitoring', path: '/monitoring', icon: Activity },
