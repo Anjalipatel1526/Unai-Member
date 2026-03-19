@@ -10,7 +10,7 @@ interface HeaderProps {
 export function Header({ onOpenMobileMenu }: HeaderProps) {
     const { company } = useCompanyData();
     return (
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-100 bg-white/80 px-4 sm:px-6 backdrop-blur-md">
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-gray-100 bg-white/80 pl-4 pr-2 backdrop-blur-md w-full">
             <div className="flex flex-1 items-center gap-4">
                 <button
                     onClick={onOpenMobileMenu}
@@ -34,13 +34,13 @@ export function Header({ onOpenMobileMenu }: HeaderProps) {
                 </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
                 <button className="relative rounded-full p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors">
                     <span className="absolute right-1 top-1 flex h-2 w-2 rounded-full bg-indigo-600"></span>
                     <Bell size={20} />
                 </button>
                 <div className="h-6 w-px bg-gray-200"></div>
-                <button className="flex items-center gap-2 rounded-full p-1 pr-2 hover:bg-gray-50 transition-colors">
+                <button className="flex items-center gap-2 rounded-full p-1 hover:bg-gray-50 transition-colors">
                     <Avatar
                         src="https://ui-avatars.com/api/?name=Admin+User&background=4f46e5&color=fff"
                         alt="Admin"

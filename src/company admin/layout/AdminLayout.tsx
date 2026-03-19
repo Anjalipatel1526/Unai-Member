@@ -11,7 +11,7 @@ export function AdminLayout() {
 
     return (
         <CompanyProvider>
-            <div className="min-h-screen bg-gray-50/50 font-sans text-gray-900 selection:bg-indigo-100 selection:text-indigo-900 flex">
+            <div className="min-h-screen bg-gray-50/50 font-sans text-gray-900 selection:bg-indigo-100 selection:text-indigo-900 flex w-full">
                 <Sidebar
                     collapsed={collapsed}
                     setCollapsed={setCollapsed}
@@ -19,12 +19,12 @@ export function AdminLayout() {
                     setMobileOpen={setMobileOpen}
                 />
                 <div className={cn(
-                    "flex flex-col min-w-0 flex-1 transition-all duration-300",
+                    "flex flex-col min-w-0 flex-1 transition-all duration-300 w-full",
                     collapsed ? "sm:ml-20" : "sm:ml-64",
-                    "ml-0" // Always 0 on absolute/fixed container but we need this for non-fixed parts
+                    "ml-0"
                 )}>
                     <Header onOpenMobileMenu={() => setMobileOpen(true)} />
-                    <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
+                    <main className="flex-1 px-4 py-4 sm:px-6 lg:px-6 overflow-x-hidden w-full max-w-none">
                         <Outlet />
                     </main>
                 </div>

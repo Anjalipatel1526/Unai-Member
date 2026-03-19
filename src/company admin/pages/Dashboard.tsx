@@ -21,7 +21,7 @@ export function Dashboard() {
     const today = new Date().toISOString().split('T')[0];
     const todayPresent = attendance.filter(a => a.date === today && (a.status === 'Present' || a.status === 'Late')).length;
     const pendingLeaveRequests = leaves.filter(l => l.status === 'Pending').length;
-    const payrollProcessing = 5;
+    const payrollProcessing = 0; // Fetched from payroll table in real implementation
 
     const statCards = [
         {
@@ -57,7 +57,7 @@ export function Dashboard() {
     ];
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 w-full">
             <div>
                 <h2 className="text-2xl font-bold tracking-tight text-gray-900">Dashboard Overview</h2>
                 <p className="text-sm text-gray-500">Welcome back! Here's what's happening today.</p>

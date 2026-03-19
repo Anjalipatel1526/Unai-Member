@@ -59,7 +59,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }: 
                 )}
             >
                 {/* Brand */}
-                <div className="flex h-16 items-center justify-between px-4 border-b border-gray-100">
+                <div className="flex h-14 items-center justify-between px-4 border-b border-gray-100">
                     <div className={cn("flex items-center gap-3 overflow-hidden", collapsed && "opacity-0 invisible w-0")}>
                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-600 text-white font-bold">
                             {company.name.charAt(0)}

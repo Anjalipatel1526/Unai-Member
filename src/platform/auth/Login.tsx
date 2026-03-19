@@ -26,7 +26,7 @@ export const Login = () => {
         // 1.5. Check Company Admin Hardcoded Credentials
         if (email === 'admin@unaitech' && password === 'UNAI2026') {
             localStorage.setItem('userAuth', JSON.stringify({ role: 'companyadmin', email }));
-            navigate('/company-admin');
+            navigate('/company-admin/dashboard');
             setIsLoading(false);
             return;
         }

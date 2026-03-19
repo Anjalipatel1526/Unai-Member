@@ -54,10 +54,6 @@ CREATE TABLE IF NOT EXISTS company_exits (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Insert a Mock Employee to avoid total blank states
-INSERT INTO company_employees (company_id, name, email, department, role, status, salary, joining_date)
-VALUES ('COMP_001', 'Alice Johnson', 'alice@unaitech.com', 'Engineering', 'Lead Developer', 'Active', 120000, '2023-01-15')
-ON CONFLICT DO NOTHING;
 
 -- Enable Realtime for all tables
 alter publication supabase_realtime add table company_employees;
