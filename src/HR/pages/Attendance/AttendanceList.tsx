@@ -1,11 +1,20 @@
-import React from 'react';
 import { Search, Filter, Calendar } from 'lucide-react';
 import { Card } from '../../components/Card';
 import { Table, TableHeader, TableRow, TableCell, TableHead, TableBody } from '../../components/Table';
 import { Badge } from '../../components/Badge';
-import { mockAttendance } from '../../data/mockData';
+import { useHRData } from '../../hooks/useHRData';
 
 export function AttendanceList() {
+    const { attendance, loading } = useHRData();
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -49,25 +58,26 @@ export function AttendanceList() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {mockAttendance.map((record) => (
-                                <TableRow key={record.id}>
-                                    <TableCell className="font-medium text-gray-500">{record.date}</TableCell>
-                                    <TableCell className="font-bold text-gray-900">{record.employee_name}</TableCell>
-                                    <TableCell className="text-indigo-600 font-medium">{record.check_in}</TableCell>
-                                    <TableCell className="text-indigo-600 font-medium">{record.check_out}</TableCell>
-                                    <TableCell>
-                                        <Badge
-                                            variant={
-                                                record.status === 'Present' ? 'success' :
-                                                    record.status === 'Late' ? 'warning' : 'danger'
-                                            }
-                                        >
-                                            {record.status}
-                                        </Badge>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                            {mockAttendance.length === 0 && (
+                            {attendance.length > 0 ? (
+                                attendance.map((record) => (
+                                    <TableRow key={record.id}>
+                                        <TableCell className="font-medium text-gray-500">{record.date}</TableCell>
+                                        <TableCell className="font-bold text-gray-900">{record.employee_name}</TableCell>
+                                        <TableCell className="text-indigo-600 font-medium">{record.check_in}</TableCell>
+                                        <TableCell className="text-indigo-600 font-medium">{record.check_out}</TableCell>
+                                        <TableCell>
+                                            <Badge
+                                                variant={
+                                                    record.status === 'Present' ? 'success' :
+                                                        record.status === 'Late' ? 'warning' : 'danger'
+                                                }
+                                            >
+                                                {record.status}
+                                            </Badge>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            ) : (
                                 <TableRow>
                                     <TableCell colSpan={5} className="text-center py-12 text-gray-400">
                                         No attendance records found for the selected filters.

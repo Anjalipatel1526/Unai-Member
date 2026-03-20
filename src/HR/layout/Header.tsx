@@ -5,7 +5,7 @@ import { Dropdown, DropdownItem } from '../components/Dropdown';
 
 export function Header() {
     return (
-        <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-gray-100 bg-white/80 backdrop-blur-md px-6 w-full">
+        <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-gray-100 bg-white/80 backdrop-blur-md px-4 md:px-6 w-full">
             <div className="flex flex-1 items-center gap-4">
                 <div className="relative w-full max-w-md hidden sm:block">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />

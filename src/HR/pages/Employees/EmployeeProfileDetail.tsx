@@ -1,15 +1,40 @@
-import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Mail, Phone, Calendar, Briefcase, MapPin } from 'lucide-react';
 import { Card } from '../../components/Card';
 import { Avatar } from '../../components/Avatar';
 import { Badge } from '../../components/Badge';
 import { Button } from '../../components/Button';
-import { mockEmployees } from '../../data/mockData';
+import { useHRData } from '../../hooks/useHRData';
 
 export function EmployeeProfileDetail() {
     const { id } = useParams();
-    const employee = mockEmployees.find(e => e.id === id) || mockEmployees[0];
+    const { employees, loading } = useHRData();
+
+    const employee = employees.find(e => e.id === id);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            </div>
+        );
+    }
+
+    if (!employee) {
+        return (
+            <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                    <Link to="/assistant-hr/employees">
+                        <Button variant="ghost" size="sm" icon={<ArrowLeft size={18} />} />
+                    </Link>
+                    <h1 className="text-2xl font-bold text-gray-900">Employee Not Found</h1>
+                </div>
+                <Card className="p-10 text-center text-gray-400">
+                    The requested employee does not exist or has been removed.
+                </Card>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6">
@@ -20,7 +45,7 @@ export function EmployeeProfileDetail() {
                 <h1 className="text-2xl font-bold text-gray-900">Employee Profile</h1>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
                 <Card className="lg:col-span-1">
                     <div className="flex flex-col items-center">
                         <Avatar src={employee.avatar} alt={employee.name} size="xl" className="ring-4 ring-indigo-50 mb-4" />
@@ -73,7 +98,7 @@ export function EmployeeProfileDetail() {
                             </div>
                             <div>
                                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Employee ID</p>
-                                <p className="text-sm font-bold text-gray-900">{employee.id}</p>
+                                <p className="text-sm font-bold text-gray-900">{employee.id.substring(0, 8)}</p>
                             </div>
                             <div>
                                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Joining Date</p>

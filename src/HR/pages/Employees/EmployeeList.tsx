@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { Plus, Search, Filter, Eye, UserPlus } from 'lucide-react';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
@@ -6,11 +5,21 @@ import { Badge } from '../../components/Badge';
 import { Avatar } from '../../components/Avatar';
 import { Table, TableHeader, TableRow, TableCell, TableHead, TableBody } from '../../components/Table';
 import { Modal } from '../../components/Modal';
-import { mockEmployees } from '../../data/mockData';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useHRData } from '../../hooks/useHRData';
 
 export function EmployeeList() {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { employees, loading } = useHRData();
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6">
@@ -51,29 +60,37 @@ export function EmployeeList() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {mockEmployees.map((emp) => (
-                            <TableRow key={emp.id}>
-                                <TableCell>
-                                    <div className="flex items-center gap-3">
-                                        <Avatar src={emp.avatar} alt={emp.name} size="sm" />
-                                        <span className="font-bold text-gray-900">{emp.name}</span>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="font-medium text-gray-500">{emp.id}</TableCell>
-                                <TableCell>{emp.department}</TableCell>
-                                <TableCell>
-                                    <Badge variant="primary">{emp.role}</Badge>
-                                </TableCell>
-                                <TableCell>
-                                    <Badge variant={emp.status === 'Active' ? 'success' : 'warning'}>{emp.status}</Badge>
-                                </TableCell>
-                                <TableCell className="text-right">
-                                    <Link to={`/assistant-hr/employees/${emp.id}`}>
-                                        <Button variant="ghost" size="sm" icon={<Eye size={16} />}>View</Button>
-                                    </Link>
+                        {employees.length > 0 ? (
+                            employees.map((emp) => (
+                                <TableRow key={emp.id}>
+                                    <TableCell>
+                                        <div className="flex items-center gap-3">
+                                            <Avatar src={emp.avatar} alt={emp.name} size="sm" />
+                                            <span className="font-bold text-gray-900">{emp.name}</span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="font-medium text-gray-500">{emp.id.substring(0, 8)}</TableCell>
+                                    <TableCell>{emp.department}</TableCell>
+                                    <TableCell>
+                                        <Badge variant="primary">{emp.role}</Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Badge variant={emp.status === 'Active' ? 'success' : 'warning'}>{emp.status}</Badge>
+                                    </TableCell>
+                                    <TableCell className="text-right">
+                                        <Link to={`/assistant-hr/employees/${emp.id}`}>
+                                            <Button variant="ghost" size="sm" icon={<Eye size={16} />}>View</Button>
+                                        </Link>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={6} className="text-center py-10 text-gray-400">
+                                    No employees found.
                                 </TableCell>
                             </TableRow>
-                        ))}
+                        )}
                     </TableBody>
                 </Table>
             </Card>

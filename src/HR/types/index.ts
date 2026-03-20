@@ -36,7 +36,7 @@ export interface Document {
     id: string;
     title: string;
     type: 'Offer Letter' | 'Certificate' | 'ID Card' | 'Other';
-    upload_date: string;
+    date: string;
     url: string;
 }
 

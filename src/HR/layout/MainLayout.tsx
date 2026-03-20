@@ -7,12 +7,12 @@ export function MainLayout() {
     const [collapsed, setCollapsed] = useState(false);
 
     return (
-        <div className="min-h-screen bg-gray-50/50">
+        <div className="flex min-h-screen bg-gray-50/50 w-full overflow-x-hidden">
             <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
 
-            <div className={`transition-all duration-300 ${collapsed ? 'pl-20' : 'pl-64'}`}>
+            <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ${collapsed ? 'ml-20' : 'ml-64'}`}>
                 <Header />
-                <main className="p-6 md:p-8 animate-in fade-in duration-500">
+                <main className="flex-1 p-4 md:p-6 animate-in fade-in duration-500 w-full max-w-none">
                     <Outlet />
                 </main>
             </div>
