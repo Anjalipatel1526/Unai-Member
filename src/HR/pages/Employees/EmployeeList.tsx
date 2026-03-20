@@ -8,7 +8,7 @@ import { Modal } from '../../components/Modal';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useHRData } from '../../hooks/useHRData';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../../../lib/supabase';
 
 export function EmployeeList() {
     const [isModalOpen, setIsModalOpen] = useState(false);

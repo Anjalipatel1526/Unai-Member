@@ -1,14 +1,15 @@
-import { FileText, Download, Upload, MoreVertical, FileCode, FileArchive } from 'lucide-react';
+import { FileText, Download, Upload, MoreVertical, FileCode, FileArchive, Trash2 } from 'lucide-react';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
 import { Badge } from '../../components/Badge';
 import { useHRData } from '../../hooks/useHRData';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../../../lib/supabase';
 import React, { useState } from 'react';
 
 export function DocumentGrid() {
     const { documents, loading, refreshData } = useHRData();
     const [isUploading, setIsUploading] = useState(false);
+    const [deletingId, setDeletingId] = useState<string | null>(null);
 
     const handleUpload = async () => {
         setIsUploading(true);
@@ -16,7 +17,7 @@ export function DocumentGrid() {
             const { error } = await supabase
                 .from('company_documents')
                 .insert([{
-                    title: 'New Document ' + new Date().toLocaleTimeString(),
+                    title: 'New Document ' + new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }),
                     type: 'Other',
                     date: new Date().toISOString().split('T')[0],
                     url: '#',
@@ -24,12 +25,33 @@ export function DocumentGrid() {
                 }]);
 
             if (error) throw error;
+            // Realtime will handle the refresh, but calling it here just in case
             await refreshData();
         } catch (err: any) {
             console.error('Error uploading document:', err);
             alert('Error uploading document: ' + err.message);
         } finally {
             setIsUploading(false);
+        }
+    };
+
+    const handleDelete = async (id: string) => {
+        if (!confirm('Are you sure you want to delete this document?')) return;
+
+        setDeletingId(id);
+        try {
+            const { error } = await supabase
+                .from('company_documents')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+            await refreshData();
+        } catch (err: any) {
+            console.error('Error deleting document:', err);
+            alert('Error deleting document: ' + err.message);
+        } finally {
+            setDeletingId(null);
         }
     };
 
@@ -61,11 +83,17 @@ export function DocumentGrid() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {documents.length > 0 ? (
                     documents.map((doc) => (
-                        <Card key={doc.id} className="group hover:border-indigo-100 p-0">
-                            <div className="bg-gray-50/50 p-6 flex flex-col items-center border-b border-gray-100 relative">
-                                <button className="absolute top-2 right-2 p-1.5 text-gray-300 hover:text-gray-600 hover:bg-white rounded-lg transition-all opacity-0 group-hover:opacity-100">
-                                    <MoreVertical size={16} />
-                                </button>
+                        <Card key={doc.id} className="group hover:border-indigo-100 p-0 relative">
+                            <button
+                                onClick={() => handleDelete(doc.id)}
+                                disabled={deletingId === doc.id}
+                                className="absolute top-2 right-2 p-1.5 text-gray-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all opacity-0 group-hover:opacity-100 z-10 disabled:opacity-50"
+                                title="Delete Document"
+                            >
+                                <Trash2 size={16} className={deletingId === doc.id ? 'animate-pulse' : ''} />
+                            </button>
+
+                            <div className="bg-gray-50/50 p-6 flex flex-col items-center border-b border-gray-100">
                                 <div className="h-16 w-16 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-4 ring-1 ring-gray-100 group-hover:scale-110 transition-transform">
                                     {doc.type === 'Offer Letter' ? <FileText className="text-indigo-500" size={32} /> :
                                         doc.type === 'Certificate' ? <FileCode className="text-emerald-500" size={32} /> :

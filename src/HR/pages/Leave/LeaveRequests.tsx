@@ -4,7 +4,7 @@ import { Button } from '../../components/Button';
 import { Badge } from '../../components/Badge';
 import { Table, TableHeader, TableRow, TableCell, TableHead, TableBody } from '../../components/Table';
 import { useHRData } from '../../hooks/useHRData';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../../../lib/supabase';
 import React, { useState } from 'react';
 
 export function LeaveRequests() {

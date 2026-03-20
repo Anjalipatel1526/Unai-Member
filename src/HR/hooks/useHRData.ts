@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import type { Employee, AttendanceRecord, LeaveRequest, Document, Activity } from '../types';
 
@@ -10,64 +10,46 @@ export function useHRData() {
     const [activities, setActivities] = useState<Activity[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const isInitialMount = useRef(true);
 
-    const fetchData = useCallback(async () => {
-        setLoading(true);
+    const fetchData = useCallback(async (isInitial = false) => {
+        if (isInitial) setLoading(true);
+
         try {
-            // Fetch Employees
-            const { data: empData, error: empError } = await supabase
-                .from('company_employees')
-                .select('*')
-                .order('created_at', { ascending: false });
+            const [
+                { data: empData, error: empError },
+                { data: attData, error: attError },
+                { data: leaveData, error: leaveError },
+                { data: docData, error: docError },
+                { data: logData, error: logError }
+            ] = await Promise.all([
+                supabase.from('company_employees').select('*').order('created_at', { ascending: false }),
+                supabase.from('company_attendance').select('*, company_employees(name, department)').order('date', { ascending: false }),
+                supabase.from('company_leaves').select('*, company_employees(name, department)').order('created_at', { ascending: false }),
+                supabase.from('company_documents').select('*').order('date', { ascending: false }),
+                supabase.from('system_logs').select('*').limit(10).order('created_at', { ascending: false })
+            ]);
 
             if (empError) throw empError;
+            if (attError) throw attError;
+            if (leaveError) throw leaveError;
+            if (docError) throw docError;
+
             setEmployees(empData as Employee[]);
 
-            // Fetch Attendance
-            const { data: attData, error: attError } = await supabase
-                .from('company_attendance')
-                .select('*, company_employees(name, department)')
-                .order('date', { ascending: false });
-
-            if (attError) throw attError;
-
-            const mappedAttendance = attData.map(att => ({
+            setAttendance((attData || []).map(att => ({
                 ...att,
                 employee_name: att.company_employees?.name || 'Unknown',
                 department: att.company_employees?.department || 'Unknown'
-            }));
-            setAttendance(mappedAttendance as unknown as AttendanceRecord[]);
+            })) as unknown as AttendanceRecord[]);
 
-            // Fetch Leaves
-            const { data: leaveData, error: leaveError } = await supabase
-                .from('company_leaves')
-                .select('*, company_employees(name, department)')
-                .order('created_at', { ascending: false });
-
-            if (leaveError) throw leaveError;
-
-            const mappedLeaves = leaveData.map(leave => ({
+            setLeaves((leaveData || []).map(leave => ({
                 ...leave,
                 employee_name: leave.company_employees?.name || 'Unknown',
                 department: leave.company_employees?.department || 'Unknown'
-            }));
-            setLeaves(mappedLeaves as unknown as LeaveRequest[]);
+            })) as unknown as LeaveRequest[]);
 
-            // Fetch Documents
-            const { data: docData, error: docError } = await supabase
-                .from('company_documents')
-                .select('*')
-                .order('date', { ascending: false });
-
-            if (docError) throw docError;
             setDocuments(docData as Document[]);
-
-            // Fetch Activities
-            const { data: logData, error: logError } = await supabase
-                .from('system_logs')
-                .select('*')
-                .limit(10)
-                .order('created_at', { ascending: false });
 
             if (!logError && logData) {
                 setActivities(logData.map(log => ({
@@ -78,7 +60,6 @@ export function useHRData() {
                     type: log.type as 'success' | 'info' | 'warning'
                 })));
             }
-
         } catch (err: any) {
             console.error('Error fetching HR data:', err);
             setError(err.message);
@@ -88,7 +69,32 @@ export function useHRData() {
     }, []);
 
     useEffect(() => {
-        fetchData();
+        if (isInitialMount.current) {
+            fetchData(true);
+            isInitialMount.current = false;
+        }
+
+        // Set up Realtime Subscriptions
+        const tables = [
+            'company_employees',
+            'company_attendance',
+            'company_leaves',
+            'company_documents',
+            'system_logs'
+        ];
+
+        const channels = tables.map(table =>
+            supabase
+                .channel(`${table}_changes`)
+                .on('postgres_changes', { event: '*', schema: 'public', table }, () => {
+                    fetchData(); // Refetch on any change
+                })
+                .subscribe()
+        );
+
+        return () => {
+            channels.forEach(channel => channel.unsubscribe());
+        };
     }, [fetchData]);
 
     return { employees, attendance, leaves, documents, activities, loading, error, refreshData: fetchData };
