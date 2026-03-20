@@ -76,7 +76,7 @@ export function Settings() {
                                     </div>
                                     <div className="space-y-1 sm:col-span-2">
                                         <label className="text-sm font-medium text-gray-700">Address</label>
-                                        <input type="text" defaultValue="123 Tech Park, Innovation Valley" className="w-full rounded-lg border-gray-200 ring-1 ring-inset ring-gray-200 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-600" />
+                                        <input type="text" defaultValue="" placeholder="Enter company address" className="w-full rounded-lg border-gray-200 ring-1 ring-inset ring-gray-200 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-600" />
                                     </div>
                                 </div>
                             </CardContent>

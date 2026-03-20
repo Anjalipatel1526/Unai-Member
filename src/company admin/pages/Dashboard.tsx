@@ -30,7 +30,6 @@ export function Dashboard() {
             icon: Users,
             color: 'text-indigo-600',
             bg: 'bg-indigo-50',
-            trend: '+12%',
         },
         {
             title: 'Today Present',
@@ -38,7 +37,6 @@ export function Dashboard() {
             icon: UserCheck,
             color: 'text-emerald-600',
             bg: 'bg-emerald-50',
-            trend: '+2%',
         },
         {
             title: 'Leave Requests',
@@ -75,12 +73,6 @@ export function Dashboard() {
                                 <p className="text-sm font-medium text-gray-500">{stat.title}</p>
                                 <div className="flex items-center gap-2">
                                     <h3 className="text-2xl font-bold text-gray-900">{stat.value}</h3>
-                                    {stat.trend && (
-                                        <span className="flex items-center text-sm font-medium text-emerald-600">
-                                            <ArrowUpRight className="h-4 w-4" />
-                                            {stat.trend}
-                                        </span>
-                                    )}
                                 </div>
                             </div>
                         </CardContent>
@@ -99,8 +91,8 @@ export function Dashboard() {
                         <CardContent className="flex-1 flex items-center justify-center text-gray-400">
                             {/* Replace with Recharts in real implementation */}
                             <div className="text-center">
-                                <TrendingUp className="h-10 w-10 mx-auto text-indigo-200 mb-2" />
-                                <p>Chart Placeholder (Recharts)</p>
+                                <TrendingUp className="h-10 w-10 mx-auto text-indigo-100 mb-2" />
+                                <p>Real-time trend data will appear here once records are available.</p>
                             </div>
                         </CardContent>
                     </Card>
@@ -111,7 +103,7 @@ export function Dashboard() {
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
-                                {leaves.slice(0, 3).map((leave, i) => (
+                                {leaves.map((leave, i) => (
                                     <div key={i} className="flex items-start gap-4 pb-4 border-b border-gray-50 last:border-0 last:pb-0">
                                         <div className="rounded-full bg-indigo-50 p-2 text-indigo-600">
                                             <Clock size={16} />
@@ -142,7 +134,7 @@ export function Dashboard() {
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
-                                {employees.slice(0, 3).map((emp) => (
+                                {employees.map((emp) => (
                                     <div key={emp.id} className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
                                             <Avatar src={emp.avatar} alt={emp.name} />

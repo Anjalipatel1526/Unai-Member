@@ -7,14 +7,18 @@ import { Avatar } from '../components/Avatar';
 import { ProgressBar } from '../components/ProgressBar';
 import { useCompanyData } from '../data/CompanyContext';
 
-const summaryCards = [
-    { title: 'Total Payout (Mar 2026)', value: '$845,200', icon: DollarSign, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-    { title: 'Pending Payslips', value: '12', icon: FileText, color: 'text-amber-600', bg: 'bg-amber-50' },
-    { title: 'Processed Payroll', value: '133', icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-];
-
 export function Payroll() {
     const { employees } = useCompanyData();
+
+    const totalPayout = employees.reduce((acc, emp) => acc + (emp.salary || 0), 0);
+    const processedPayroll = employees.length; // Placeholder logic
+
+    const summaryCards = [
+        { title: 'Total Payout', value: `$${totalPayout.toLocaleString()}`, icon: DollarSign, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+        { title: 'Pending Payslips', value: '0', icon: FileText, color: 'text-amber-600', bg: 'bg-amber-50' },
+        { title: 'Processed Payroll', value: processedPayroll.toString(), icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    ];
+
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 w-full">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -66,7 +70,7 @@ export function Payroll() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {employees.slice(0, 5).map((emp: any, i) => (
+                                {employees.map((emp: any, i) => (
                                     <TableRow key={emp.id}>
                                         <TableCell>
                                             <div className="flex items-center gap-3">
@@ -112,28 +116,30 @@ export function Payroll() {
                         <div>
                             <div className="flex justify-between text-sm mb-1">
                                 <span className="text-gray-500">Basic Pay</span>
-                                <span className="font-medium text-gray-900">45%</span>
+                                <span className="font-medium text-gray-900">0%</span>
                             </div>
-                            <ProgressBar value={45} color="bg-indigo-600" />
+                            <ProgressBar value={0} color="bg-indigo-600" />
                         </div>
                         <div>
                             <div className="flex justify-between text-sm mb-1">
                                 <span className="text-gray-500">Allowances (HRA, TA)</span>
-                                <span className="font-medium text-gray-900">35%</span>
+                                <span className="font-medium text-gray-900">0%</span>
                             </div>
-                            <ProgressBar value={35} color="bg-emerald-500" />
+                            <ProgressBar value={0} color="bg-emerald-500" />
                         </div>
                         <div>
                             <div className="flex justify-between text-sm mb-1">
                                 <span className="text-gray-500">Deductions (Tax, PF)</span>
-                                <span className="font-medium text-gray-900">20%</span>
+                                <span className="font-medium text-gray-900">0%</span>
                             </div>
-                            <ProgressBar value={20} color="bg-rose-500" />
+                            <ProgressBar value={0} color="bg-rose-500" />
                         </div>
 
                         <div className="mt-6 p-4 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-between">
                             <span className="text-sm font-medium text-gray-700">Average Net Salary</span>
-                            <span className="text-lg font-bold text-indigo-700">$7,280</span>
+                            <span className="text-lg font-bold text-indigo-700">
+                                ${employees.length > 0 ? (totalPayout / employees.length).toLocaleString(undefined, { maximumFractionDigits: 0 }) : '0'}
+                            </span>
                         </div>
                     </CardContent>
                 </Card>

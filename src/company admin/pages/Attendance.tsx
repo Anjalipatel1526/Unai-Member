@@ -50,15 +50,21 @@ export function Attendance() {
                             <h4 className="text-sm font-semibold text-gray-900 border-b border-gray-100 pb-2">Today's Summary</h4>
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500">Present</span>
-                                <span className="font-medium text-emerald-600">132</span>
+                                <span className="font-medium text-emerald-600">
+                                    {attendance.filter(a => a.date === new Date().toISOString().split('T')[0] && (a.status === 'Present' || a.status === 'Late')).length}
+                                </span>
                             </div>
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500">Absent</span>
-                                <span className="font-medium text-rose-600">5</span>
+                                <span className="font-medium text-rose-600">
+                                    {attendance.filter(a => a.date === new Date().toISOString().split('T')[0] && a.status === 'Absent').length}
+                                </span>
                             </div>
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500">Late</span>
-                                <span className="font-medium text-amber-600">8</span>
+                                <span className="font-medium text-amber-600">
+                                    {attendance.filter(a => a.date === new Date().toISOString().split('T')[0] && a.is_late).length}
+                                </span>
                             </div>
                         </div>
                     </CardContent>

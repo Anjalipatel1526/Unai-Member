@@ -93,8 +93,8 @@ export function Performance() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {employees.slice(0, 4).map((emp: any, i) => {
-                                    const rating = i === 0 ? 4 : i === 1 ? 5 : i === 2 ? 3 : 4;
+                                {employees.slice(0, 4).map((emp: any) => {
+                                    const rating = 0;
                                     return (
                                         <TableRow key={emp.id}>
                                             <TableCell>
@@ -109,7 +109,7 @@ export function Performance() {
                                             </TableCell>
                                             <TableCell>
                                                 <span className="inline-flex items-center px-2 py-1 rounded-md bg-gray-50 text-xs font-medium text-gray-600 border border-gray-200">
-                                                    {rating >= 4 ? '3/3' : '2/3'} Goals
+                                                    - Goals
                                                 </span>
                                             </TableCell>
                                             <TableCell className="text-right">

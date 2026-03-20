@@ -11,12 +11,11 @@ import { Roles } from './platform/superadmin/pages/Roles';
 import { Settings } from './platform/superadmin/pages/Settings';
 import { Login } from './platform/auth/Login';
 
-// HR SaaS Company Admin Imports
 import {
   AdminLayout,
   CompanyDashboard,
   CompanyEmployees,
-  EmployeeProfile,
+  EmployeeProfile as CompanyEmployeeProfile,
   CompanyAttendance,
   LeaveManagement,
   CompanyPayroll,
@@ -26,6 +25,8 @@ import {
   CompanyReports,
   CompanySettings
 } from './company admin';
+
+import { HRRoutes } from './HR/routes/HRRoutes';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const auth = localStorage.getItem('userAuth');
@@ -54,7 +55,7 @@ function App() {
         <Route path="/company-admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
           <Route path="dashboard" element={<CompanyDashboard />} />
           <Route path="employees" element={<CompanyEmployees />} />
-          <Route path="employees/:id" element={<EmployeeProfile />} />
+          <Route path="employees/:id" element={<CompanyEmployeeProfile />} />
           <Route path="attendance" element={<CompanyAttendance />} />
           <Route path="leave" element={<LeaveManagement />} />
           <Route path="payroll" element={<CompanyPayroll />} />
@@ -65,6 +66,9 @@ function App() {
           <Route path="settings" element={<CompanySettings />} />
           <Route index element={<Navigate to="dashboard" replace />} />
         </Route>
+
+        {/* Assistant HR Routes */}
+        <Route path="/assistant-hr/*" element={<HRRoutes />} />
       </Routes>
     </Router>
   );

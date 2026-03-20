@@ -9,9 +9,9 @@ import { ProgressBar } from '../components/ProgressBar';
 import { useCompanyData } from '../data/CompanyContext';
 
 const policyCards = [
-    { title: 'Casual Leave (CL)', used: 4, total: 12, icon: CalendarHeart, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-    { title: 'Sick Leave (SL)', used: 2, total: 8, icon: CalendarOff, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { title: 'Loss of Pay (LOP)', used: 1, total: 'N/A', icon: AlertCircle, color: 'text-amber-600', bg: 'bg-amber-50' },
+    { title: 'Casual Leave (CL)', used: 0, total: 12, icon: CalendarHeart, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+    { title: 'Sick Leave (SL)', used: 0, total: 8, icon: CalendarOff, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { title: 'Loss of Pay (LOP)', used: 0, total: 'N/A', icon: AlertCircle, color: 'text-amber-600', bg: 'bg-amber-50' },
 ];
 
 export function LeaveManagement() {

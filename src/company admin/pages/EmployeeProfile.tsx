@@ -51,7 +51,7 @@ export function EmployeeProfile() {
                             </div>
                             <div className="flex items-center gap-3 text-sm text-gray-600">
                                 <MapPin className="h-5 w-5 text-gray-400" />
-                                San Francisco, CA
+                                {employee.location || '-'}
                             </div>
                         </div>
 
@@ -86,13 +86,13 @@ export function EmployeeProfile() {
                                 <CardTitle className="text-sm text-gray-500 font-medium">Attendance Summary (This Month)</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="text-3xl font-bold text-gray-900 mb-2">92%</div>
+                                <div className="text-3xl font-bold text-gray-900 mb-2">0%</div>
                                 <div className="w-full bg-gray-100 rounded-full h-2">
-                                    <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '92%' }}></div>
+                                    <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '0%' }}></div>
                                 </div>
                                 <div className="mt-2 text-xs text-gray-500 flex justify-between">
-                                    <span>Present: 20 days</span>
-                                    <span>Absent: 2 days</span>
+                                    <span>Present: 0 days</span>
+                                    <span>Absent: 0 days</span>
                                 </div>
                             </CardContent>
                         </Card>
@@ -102,13 +102,13 @@ export function EmployeeProfile() {
                                 <CardTitle className="text-sm text-gray-500 font-medium">Leave Balance</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="text-3xl font-bold text-gray-900 mb-2">12 <span className="text-sm font-normal text-gray-500">days left</span></div>
+                                <div className="text-3xl font-bold text-gray-900 mb-2">0 <span className="text-sm font-normal text-gray-500">days left</span></div>
                                 <div className="w-full bg-gray-100 rounded-full h-2">
-                                    <div className="bg-indigo-500 h-2 rounded-full" style={{ width: '60%' }}></div>
+                                    <div className="bg-indigo-500 h-2 rounded-full" style={{ width: '0%' }}></div>
                                 </div>
                                 <div className="mt-2 text-xs text-gray-500 flex justify-between">
-                                    <span>Used: 8 days</span>
-                                    <span>Total: 20 days</span>
+                                    <span>Used: 0 days</span>
+                                    <span>Total: 0 days</span>
                                 </div>
                             </CardContent>
                         </Card>
