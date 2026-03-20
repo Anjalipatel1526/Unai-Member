@@ -3,9 +3,35 @@ import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
 import { Badge } from '../../components/Badge';
 import { useHRData } from '../../hooks/useHRData';
+import { supabase } from '../../lib/supabase';
+import React, { useState } from 'react';
 
 export function DocumentGrid() {
-    const { documents, loading } = useHRData();
+    const { documents, loading, refreshData } = useHRData();
+    const [isUploading, setIsUploading] = useState(false);
+
+    const handleUpload = async () => {
+        setIsUploading(true);
+        try {
+            const { error } = await supabase
+                .from('company_documents')
+                .insert([{
+                    title: 'New Document ' + new Date().toLocaleTimeString(),
+                    type: 'Other',
+                    date: new Date().toISOString().split('T')[0],
+                    url: '#',
+                    company_id: 'COMP_001'
+                }]);
+
+            if (error) throw error;
+            await refreshData();
+        } catch (err: any) {
+            console.error('Error uploading document:', err);
+            alert('Error uploading document: ' + err.message);
+        } finally {
+            setIsUploading(false);
+        }
+    };
 
     if (loading) {
         return (
@@ -22,8 +48,13 @@ export function DocumentGrid() {
                     <h1 className="text-2xl font-bold text-gray-900">Documents</h1>
                     <p className="text-gray-500 text-sm">Access and manage organization-wide employee documents.</p>
                 </div>
-                <Button variant="primary" icon={<Upload size={18} />}>
-                    Upload New
+                <Button
+                    variant="primary"
+                    icon={<Upload size={18} />}
+                    onClick={handleUpload}
+                    isLoading={isUploading}
+                >
+                    {isUploading ? 'Uploading...' : 'Upload New'}
                 </Button>
             </div>
 
@@ -47,7 +78,13 @@ export function DocumentGrid() {
                             </div>
                             <div className="p-3 flex items-center justify-between">
                                 <span className="text-xs font-medium text-gray-400">Uploaded {doc.date}</span>
-                                <Button variant="ghost" size="sm" icon={<Download size={16} />} className="text-indigo-600 hover:bg-indigo-50">
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    icon={<Download size={16} />}
+                                    className="text-indigo-600 hover:bg-indigo-50"
+                                    onClick={() => alert('Downloading...')}
+                                >
                                     Get
                                 </Button>
                             </div>

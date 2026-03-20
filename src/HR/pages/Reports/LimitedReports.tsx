@@ -4,6 +4,10 @@ import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
 
 export function LimitedReports() {
+    const handleExport = (reportTitle: string) => {
+        alert(`Exporting ${reportTitle} as CSV...`);
+    };
+
     const reportCards = [
         {
             title: 'Attendance Report',
@@ -30,17 +34,22 @@ export function LimitedReports() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {reportCards.map((report) => (
-                    <Card key={report.title} className="hover:border-indigo-100 transform hover:-translate-y-1">
+                    <Card key={report.title} className="hover:border-indigo-100 transform hover:-translate-y-1 transition-all duration-300">
                         <div className="flex gap-6">
-                            <div className={`p-4 rounded-2xl ${report.bg} ${report.color} h-fit`}>
+                            <div className={`p-4 rounded-2xl ${report.bg} ${report.color} h-fit shadow-inner`}>
                                 <report.icon size={28} />
                             </div>
                             <div className="space-y-3">
                                 <h3 className="text-lg font-bold text-gray-900">{report.title}</h3>
-                                <p className="text-sm text-gray-500 leading-relaxed">
-                                    {report.description}
+                                <p className="text-sm text-gray-500 leading-relaxed italic">
+                                    "{report.description}"
                                 </p>
-                                <Button variant="primary" size="sm" icon={<Download size={16} />}>
+                                <Button
+                                    variant="primary"
+                                    size="sm"
+                                    icon={<Download size={16} />}
+                                    onClick={() => handleExport(report.title)}
+                                >
                                     Export CSV
                                 </Button>
                             </div>

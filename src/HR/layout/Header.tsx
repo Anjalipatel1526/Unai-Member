@@ -2,8 +2,16 @@ import React from 'react';
 import { Search, Bell, ChevronDown } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { Dropdown, DropdownItem } from '../components/Dropdown';
+import { useNavigate } from 'react-router-dom';
 
 export function Header() {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem('userAuth');
+        navigate('/login');
+    };
+
     return (
         <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-gray-100 bg-white/80 backdrop-blur-md px-4 md:px-6 w-full">
             <div className="flex flex-1 items-center gap-4">
@@ -18,7 +26,10 @@ export function Header() {
             </div>
 
             <div className="flex items-center gap-4">
-                <button className="relative p-2 text-gray-500 hover:bg-gray-100 rounded-xl transition-colors">
+                <button
+                    onClick={() => alert('Feature coming soon: Notifications')}
+                    className="relative p-2 text-gray-500 hover:bg-gray-100 rounded-xl transition-colors"
+                >
                     <Bell size={20} />
                     <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white" />
                 </button>
@@ -27,19 +38,19 @@ export function Header() {
 
                 <Dropdown
                     trigger={
-                        <div className="flex items-center gap-3 group">
+                        <button className="flex items-center gap-3 group outline-none">
                             <div className="text-right hidden md:block">
                                 <p className="text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">Assistant HR</p>
                                 <p className="text-xs text-gray-500">Limited Access</p>
                             </div>
                             <Avatar size="sm" alt="Assistant HR" className="ring-2 ring-indigo-50 group-hover:ring-indigo-100 transition-all" />
-                            <ChevronDown size={14} className="text-gray-400" />
-                        </div>
+                            <ChevronDown size={14} className="text-gray-400 group-hover:text-indigo-500 transition-colors" />
+                        </button>
                     }
                 >
-                    <DropdownItem>Profile Settings</DropdownItem>
-                    <DropdownItem>Help Center</DropdownItem>
-                    <DropdownItem variant="danger">Logout</DropdownItem>
+                    <DropdownItem onClick={() => navigate('/assistant-hr/profile')}>Profile Settings</DropdownItem>
+                    <DropdownItem onClick={() => alert('Support Center coming soon')}>Help Center</DropdownItem>
+                    <DropdownItem variant="danger" onClick={handleLogout}>Logout</DropdownItem>
                 </Dropdown>
             </div>
         </header>

@@ -8,10 +8,57 @@ import { Modal } from '../../components/Modal';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useHRData } from '../../hooks/useHRData';
+import { supabase } from '../../lib/supabase';
 
 export function EmployeeList() {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { employees, loading } = useHRData();
+    const { employees, loading, refreshData } = useHRData();
+    const [isSaving, setIsSaving] = useState(false);
+
+    // Form State
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        department: 'Engineering',
+        role: 'Developer',
+        joining_date: new Date().toISOString().split('T')[0]
+    });
+
+    const handleSaveEmployee = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!formData.name || !formData.email) return alert('Please fill in name and email');
+
+        setIsSaving(true);
+        try {
+            const { error } = await supabase
+                .from('company_employees')
+                .insert([{
+                    ...formData,
+                    status: 'Active',
+                    company_id: 'COMP_001', // Default for now, should ideally come from auth context
+                    avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.name)}&background=random`
+                }]);
+
+            if (error) throw error;
+
+            await refreshData();
+            setIsModalOpen(false);
+            setFormData({
+                name: '',
+                email: '',
+                phone: '',
+                department: 'Engineering',
+                role: 'Developer',
+                joining_date: new Date().toISOString().split('T')[0]
+            });
+        } catch (err: any) {
+            console.error('Error saving employee:', err);
+            alert('Error saving employee: ' + err.message);
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
     if (loading) {
         return (
@@ -101,28 +148,54 @@ export function EmployeeList() {
                 title="Add New Employee"
                 footer={
                     <>
-                        <Button variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-                        <Button variant="primary">Save Employee</Button>
+                        <Button variant="outline" onClick={() => setIsModalOpen(false)} disabled={isSaving}>Cancel</Button>
+                        <Button variant="primary" onClick={handleSaveEmployee} isLoading={isSaving}>
+                            {isSaving ? 'Saving...' : 'Save Employee'}
+                        </Button>
                     </>
                 }
             >
-                <form className="space-y-4">
+                <form onSubmit={handleSaveEmployee} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-1.5 col-span-2">
                             <label className="text-sm font-semibold text-gray-700">Full Name</label>
-                            <input type="text" placeholder="John Doe" className="w-full rounded-xl border-gray-200 ring-1 ring-gray-200 py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-600 outline-none" />
+                            <input
+                                type="text"
+                                required
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                placeholder="John Doe"
+                                className="w-full rounded-xl border-gray-200 ring-1 ring-gray-200 py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-600 outline-none"
+                            />
                         </div>
                         <div className="space-y-1.5">
                             <label className="text-sm font-semibold text-gray-700">Email Address</label>
-                            <input type="email" placeholder="john@company.com" className="w-full rounded-xl border-gray-200 ring-1 ring-gray-200 py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-600 outline-none" />
+                            <input
+                                type="email"
+                                required
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                placeholder="john@company.com"
+                                className="w-full rounded-xl border-gray-200 ring-1 ring-gray-200 py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-600 outline-none"
+                            />
                         </div>
                         <div className="space-y-1.5">
                             <label className="text-sm font-semibold text-gray-700">Phone Number</label>
-                            <input type="text" placeholder="+1 234..." className="w-full rounded-xl border-gray-200 ring-1 ring-gray-200 py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-600 outline-none" />
+                            <input
+                                type="text"
+                                value={formData.phone}
+                                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                placeholder="+1 234..."
+                                className="w-full rounded-xl border-gray-200 ring-1 ring-gray-200 py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-600 outline-none"
+                            />
                         </div>
                         <div className="space-y-1.5">
                             <label className="text-sm font-semibold text-gray-700">Department</label>
-                            <select className="w-full rounded-xl border-gray-200 ring-1 ring-gray-200 py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-600 outline-none">
+                            <select
+                                value={formData.department}
+                                onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                                className="w-full rounded-xl border-gray-200 ring-1 ring-gray-200 py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-600 outline-none"
+                            >
                                 <option>Engineering</option>
                                 <option>Marketing</option>
                                 <option>HR</option>
@@ -131,7 +204,11 @@ export function EmployeeList() {
                         </div>
                         <div className="space-y-1.5">
                             <label className="text-sm font-semibold text-gray-700">Role</label>
-                            <select className="w-full rounded-xl border-gray-200 ring-1 ring-gray-200 py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-600 outline-none">
+                            <select
+                                value={formData.role}
+                                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                                className="w-full rounded-xl border-gray-200 ring-1 ring-gray-200 py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-600 outline-none"
+                            >
                                 <option>Developer</option>
                                 <option>Designer</option>
                                 <option>Manager</option>
@@ -140,7 +217,12 @@ export function EmployeeList() {
                         </div>
                         <div className="space-y-1.5 col-span-2">
                             <label className="text-sm font-semibold text-gray-700">Joining Date</label>
-                            <input type="date" className="w-full rounded-xl border-gray-200 ring-1 ring-gray-200 py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-600 outline-none" />
+                            <input
+                                type="date"
+                                value={formData.joining_date}
+                                onChange={(e) => setFormData({ ...formData, joining_date: e.target.value })}
+                                className="w-full rounded-xl border-gray-200 ring-1 ring-gray-200 py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-600 outline-none"
+                            />
                         </div>
                     </div>
                 </form>

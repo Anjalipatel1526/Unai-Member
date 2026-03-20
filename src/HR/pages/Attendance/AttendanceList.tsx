@@ -3,9 +3,20 @@ import { Card } from '../../components/Card';
 import { Table, TableHeader, TableRow, TableCell, TableHead, TableBody } from '../../components/Table';
 import { Badge } from '../../components/Badge';
 import { useHRData } from '../../hooks/useHRData';
+import React, { useState, useMemo } from 'react';
 
 export function AttendanceList() {
     const { attendance, loading } = useHRData();
+    const [selectedDept, setSelectedDept] = useState('All Departments');
+    const [selectedDate, setSelectedDate] = useState('');
+
+    const filteredAttendance = useMemo(() => {
+        return attendance.filter(record => {
+            const deptMatch = selectedDept === 'All Departments' || record.department === selectedDept;
+            const dateMatch = !selectedDate || record.date === selectedDate;
+            return deptMatch && dateMatch;
+        });
+    }, [attendance, selectedDept, selectedDate]);
 
     if (loading) {
         return (
@@ -32,7 +43,11 @@ export function AttendanceList() {
                     <div className="space-y-4">
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Department</label>
-                            <select className="w-full rounded-xl border-none ring-1 ring-gray-200 py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-600 transition-all outline-none bg-white">
+                            <select
+                                value={selectedDept}
+                                onChange={(e) => setSelectedDept(e.target.value)}
+                                className="w-full rounded-xl border-none ring-1 ring-gray-200 py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-600 transition-all outline-none bg-white"
+                            >
                                 <option>All Departments</option>
                                 <option>Engineering</option>
                                 <option>Marketing</option>
@@ -41,7 +56,12 @@ export function AttendanceList() {
                         </div>
                         <div className="space-y-1.5">
                             <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Date</label>
-                            <input type="date" className="w-full rounded-xl border-none ring-1 ring-gray-200 py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-600 transition-all outline-none bg-white" />
+                            <input
+                                type="date"
+                                value={selectedDate}
+                                onChange={(e) => setSelectedDate(e.target.value)}
+                                className="w-full rounded-xl border-none ring-1 ring-gray-200 py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-600 transition-all outline-none bg-white"
+                            />
                         </div>
                     </div>
                 </Card>
@@ -58,8 +78,8 @@ export function AttendanceList() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {attendance.length > 0 ? (
-                                attendance.map((record) => (
+                            {filteredAttendance.length > 0 ? (
+                                filteredAttendance.map((record) => (
                                     <TableRow key={record.id}>
                                         <TableCell className="font-medium text-gray-500">{record.date}</TableCell>
                                         <TableCell className="font-bold text-gray-900">{record.employee_name}</TableCell>

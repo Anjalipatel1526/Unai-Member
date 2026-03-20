@@ -1,12 +1,33 @@
-import { CheckCircle2, XCircle, Forward, MessageSquare } from 'lucide-react';
+import { CheckCircle2, XCircle, Forward } from 'lucide-react';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
 import { Badge } from '../../components/Badge';
 import { Table, TableHeader, TableRow, TableCell, TableHead, TableBody } from '../../components/Table';
 import { useHRData } from '../../hooks/useHRData';
+import { supabase } from '../../lib/supabase';
+import React, { useState } from 'react';
 
 export function LeaveRequests() {
-    const { leaves, loading } = useHRData();
+    const { leaves, loading, refreshData } = useHRData();
+    const [actionId, setActionId] = useState<string | null>(null);
+
+    const handleLeaveAction = async (id: string, newStatus: string) => {
+        setActionId(id);
+        try {
+            const { error } = await supabase
+                .from('company_leaves')
+                .update({ status: newStatus })
+                .eq('id', id);
+
+            if (error) throw error;
+            await refreshData();
+        } catch (err: any) {
+            console.error('Error updating leave status:', err);
+            alert('Error updating leave status: ' + err.message);
+        } finally {
+            setActionId(null);
+        }
+    };
 
     if (loading) {
         return (
@@ -64,14 +85,29 @@ export function LeaveRequests() {
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <div className="flex justify-end gap-2">
-                                            <button className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="Approve Level 1">
-                                                <CheckCircle2 size={20} />
+                                            <button
+                                                onClick={() => handleLeaveAction(leave.id, 'Approved')}
+                                                disabled={actionId === leave.id}
+                                                className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors disabled:opacity-50"
+                                                title="Approve Level 1"
+                                            >
+                                                <CheckCircle2 size={20} className={actionId === leave.id ? 'animate-pulse' : ''} />
                                             </button>
-                                            <button className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors" title="Reject">
-                                                <XCircle size={20} />
+                                            <button
+                                                onClick={() => handleLeaveAction(leave.id, 'Rejected')}
+                                                disabled={actionId === leave.id}
+                                                className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-50"
+                                                title="Reject"
+                                            >
+                                                <XCircle size={20} className={actionId === leave.id ? 'animate-pulse' : ''} />
                                             </button>
-                                            <button className="p-2 text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors" title="Forward to HR Manager">
-                                                <Forward size={20} />
+                                            <button
+                                                onClick={() => handleLeaveAction(leave.id, 'Forwarded')}
+                                                disabled={actionId === leave.id}
+                                                className="p-2 text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors disabled:opacity-50"
+                                                title="Forward to HR Manager"
+                                            >
+                                                <Forward size={20} className={actionId === leave.id ? 'animate-pulse' : ''} />
                                             </button>
                                         </div>
                                     </TableCell>
