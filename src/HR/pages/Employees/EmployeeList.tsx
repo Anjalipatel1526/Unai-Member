@@ -1,4 +1,4 @@
-import { Plus, Search, Filter, Eye, UserPlus } from 'lucide-react';
+import { Plus, Search, Filter, Eye, UserPlus, Link as LinkIcon, Check } from 'lucide-react';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
 import { Badge } from '../../components/Badge';
@@ -24,6 +24,15 @@ export function EmployeeList() {
         role: 'Developer',
         joining_date: new Date().toISOString().split('T')[0]
     });
+
+    const [copied, setCopied] = useState(false);
+
+    const copyOnboardingLink = () => {
+        const link = `${window.location.origin}/onboarding`;
+        navigator.clipboard.writeText(link);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
 
     const handleSaveEmployee = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -73,15 +82,24 @@ export function EmployeeList() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">Employees</h1>
-                    <p className="text-gray-500 text-sm">Manage and view your organization's workforce.</p>
+                    <p className="text-gray-500 text-sm mt-1">Manage organization employees and their profiles.</p>
                 </div>
-                <Button
-                    variant="primary"
-                    icon={<UserPlus size={18} />}
-                    onClick={() => setIsModalOpen(true)}
-                >
-                    Add Employee
-                </Button>
+                <div className="flex gap-3">
+                    <Button
+                        variant="secondary"
+                        icon={copied ? <Check size={18} /> : <LinkIcon size={18} />}
+                        onClick={copyOnboardingLink}
+                    >
+                        {copied ? 'Link Copied!' : 'Copy Onboarding Link'}
+                    </Button>
+                    <Button
+                        variant="primary"
+                        icon={<UserPlus size={18} />}
+                        onClick={() => setIsModalOpen(true)}
+                    >
+                        Add Employee
+                    </Button>
+                </div>
             </div>
 
             <Card className="p-0">

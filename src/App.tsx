@@ -27,6 +27,7 @@ import {
 } from './company admin';
 
 import { HRRoutes } from './HR/routes/HRRoutes';
+import CandidateOnboarding from './Candidate/CandidateOnboarding';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const auth = localStorage.getItem('userAuth');
@@ -39,6 +40,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/onboarding" element={<CandidateOnboarding />} />
         <Route path="/client-portal" element={<div className="min-h-screen bg-gray-50 flex items-center justify-center p-10"><h1 className="text-3xl font-bold text-gray-900">Client Portal (Coming Soon)</h1></div>} />
         <Route path="/" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
           <Route index element={<Dashboard />} />
