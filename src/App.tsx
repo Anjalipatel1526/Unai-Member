@@ -27,6 +27,7 @@ import {
 } from './company admin';
 
 import { HRRoutes } from './HR/routes/HRRoutes';
+import { EmployeeRoutes } from './employeee/routes/EmployeeRoutes';
 import CandidateOnboarding from './Candidate/CandidateOnboarding';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -71,6 +72,9 @@ function App() {
 
         {/* Assistant HR Routes */}
         <Route path="/assistant-hr/*" element={<HRRoutes />} />
+
+        {/* Employee Self-Service Routes */}
+        <Route path="/employee/*" element={<EmployeeRoutes />} />
       </Routes>
     </Router>
   );
