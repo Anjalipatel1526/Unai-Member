@@ -240,9 +240,16 @@ export function EmployeeList() {
                                 onChange={(e) => setFormData({ ...formData, department: e.target.value })}
                                 className="w-full rounded-xl border-gray-200 ring-1 ring-gray-200 py-2 px-3 text-sm focus:ring-2 focus:ring-indigo-600 outline-none"
                             >
-                                <option>Engineering</option>
+                                <option>Developer</option>
+                                <option>Full Stack Developer</option>
+                                <option>Frontend</option>
+                                <option>Backend</option>
+                                <option>UI/UX Design</option>
+                                <option>Automation Testing</option>
+                                <option>Manual Testing</option>
                                 <option>Marketing</option>
                                 <option>HR</option>
+                                <option>Sales</option>
                                 <option>Finance</option>
                             </select>
                         </div>

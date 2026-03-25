@@ -15,6 +15,7 @@ export interface AttendanceRecord {
     id: string;
     employee_id: string;
     employee_name: string;
+    department: string;
     date: string;
     check_in: string;
     check_out: string;

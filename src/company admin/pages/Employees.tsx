@@ -16,7 +16,7 @@ export function Employees() {
     const [searchQuery, setSearchQuery] = useState('');
     const [credentials, setCredentials] = useState<any[]>([]);
     const [selectedCredential, setSelectedCredential] = useState<any>(null);
-    const [credForm, setCredForm] = useState({ employee_name: '', work_email: '', password: '', department: '', designation: '' });
+    const [credForm, setCredForm] = useState({ employee_id: '', employee_name: '', work_email: '', password: '', department: '', designation: '' });
     const [copiedField, setCopiedField] = useState('');
     const navigate = useNavigate();
 
@@ -48,7 +48,7 @@ export function Employees() {
     );
 
     // Get credential for an employee
-    const getCredential = (empId: string) => credentials.find(c => c.employee_id === empId);
+    const getCredential = (empId: string) => credentials.find(c => c.employee_id === empId || c.employee_name === employees.find((e: any) => e.id === empId)?.name);
 
     // Copy to clipboard
     const copyToClipboard = (text: string, field: string) => {
@@ -96,6 +96,7 @@ export function Employees() {
         if (existing) {
             setSelectedCredential(existing);
             setCredForm({
+                employee_id: emp.id,
                 employee_name: existing.employee_name,
                 work_email: existing.work_email,
                 password: existing.password,
@@ -105,6 +106,7 @@ export function Employees() {
         } else {
             setSelectedCredential(null);
             setCredForm({
+                employee_id: emp.id,
                 employee_name: emp.name || '',
                 work_email: '',
                 password: '',
@@ -128,6 +130,7 @@ export function Employees() {
             const { error } = await supabase
                 .from('employee_credentials')
                 .update({
+                    employee_id: credForm.employee_id,
                     work_email: credForm.work_email,
                     password: credForm.password,
                     employee_name: credForm.employee_name,
@@ -141,6 +144,7 @@ export function Employees() {
             // Insert new
             const { error } = await supabase.from('employee_credentials').insert({
                 company_id: 'COMP_001',
+                employee_id: credForm.employee_id,
                 employee_name: credForm.employee_name,
                 work_email: credForm.work_email,
                 password: credForm.password,
@@ -264,7 +268,7 @@ export function Employees() {
                                             </Badge>
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div className="flex items-center justify-end gap-2">
                                                 <button
                                                     onClick={() => navigate(`/company-admin/employees/${emp.id}`)}
                                                     className="p-1.5 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
@@ -321,10 +325,17 @@ export function Employees() {
                         <div className="space-y-1">
                             <label className="text-sm font-medium text-gray-700">Department</label>
                             <select name="department" className="w-full rounded-lg border-gray-200 ring-1 ring-inset ring-gray-200 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-600">
-                                <option>Engineering</option>
+                                <option>Developer</option>
+                                <option>Full Stack Developer</option>
+                                <option>Frontend</option>
+                                <option>Backend</option>
+                                <option>UI/UX Design</option>
+                                <option>Automation Testing</option>
+                                <option>Manual Testing</option>
                                 <option>Marketing</option>
                                 <option>HR</option>
                                 <option>Sales</option>
+                                <option>Finance</option>
                             </select>
                         </div>
                     </div>

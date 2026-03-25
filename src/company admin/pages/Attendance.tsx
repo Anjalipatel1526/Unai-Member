@@ -99,15 +99,18 @@ export function Attendance() {
                             <TableBody>
                                 {attendance.map((record: any) => {
                                     const emp = employees.find((e: any) => e.id === record.employee_id);
+                                    const displayName = record.employee_name || emp?.name || 'Unknown';
+                                    const displayDept = emp?.department || record.department || 'N/A';
+
                                     return (
                                         <TableRow key={record.id}>
                                             <TableCell className="text-sm text-gray-500">{record.date}</TableCell>
                                             <TableCell>
                                                 <div className="flex items-center gap-3">
-                                                    <Avatar src={emp?.avatar} alt={emp?.name} className="h-8 w-8" />
+                                                    <Avatar src={emp?.avatar} alt={displayName} className="h-8 w-8" />
                                                     <div>
-                                                        <div className="font-medium text-gray-900">{emp?.name}</div>
-                                                        <div className="text-xs text-gray-500">{emp?.department}</div>
+                                                        <div className="font-medium text-gray-900">{displayName}</div>
+                                                        <div className="text-xs text-gray-500">{displayDept}</div>
                                                     </div>
                                                 </div>
                                             </TableCell>

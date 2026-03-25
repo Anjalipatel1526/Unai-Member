@@ -26,9 +26,10 @@ CREATE POLICY "Allow all operations on employee_credentials"
 -- 2. Company Attendance (for check-in/check-out tracking)
 CREATE TABLE IF NOT EXISTS public.company_attendance (
     id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-    company_id tadfgdext NOT NULL,
+    company_id text NOT NULL,
     employee_id text,
     employee_name text NOT NULL,
+    department text,
     date text NOT NULL,
     check_in text,
     check_out text,

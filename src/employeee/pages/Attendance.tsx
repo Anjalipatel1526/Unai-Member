@@ -90,6 +90,7 @@ export function Attendance() {
             company_id: auth.companyId || 'COMP_001',
             employee_id: auth.employeeId,
             employee_name: auth.employeeName,
+            department: auth.department || '',
             date: today,
             check_in: checkInTime,
             check_out: null,

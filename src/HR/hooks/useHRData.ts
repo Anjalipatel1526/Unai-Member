@@ -24,7 +24,7 @@ export function useHRData() {
                 { data: logData, error: logError }
             ] = await Promise.all([
                 supabase.from('company_employees').select('*').order('created_at', { ascending: false }),
-                supabase.from('company_attendance').select('*, company_employees(name, department)').order('date', { ascending: false }),
+                supabase.from('company_attendance').select('*').order('date', { ascending: false }),
                 supabase.from('company_leaves').select('*, company_employees(name, department)').order('created_at', { ascending: false }),
                 supabase.from('company_documents').select('*').order('date', { ascending: false }),
                 supabase.from('system_logs').select('*').limit(10).order('created_at', { ascending: false })
@@ -37,11 +37,14 @@ export function useHRData() {
 
             setEmployees(empData as Employee[]);
 
-            setAttendance((attData || []).map(att => ({
-                ...att,
-                employee_name: att.company_employees?.name || 'Unknown',
-                department: att.company_employees?.department || 'Unknown'
-            })) as unknown as AttendanceRecord[]);
+            setAttendance((attData || []).map(att => {
+                const emp = (empData || []).find(e => e.id === att.employee_id);
+                return {
+                    ...att,
+                    employee_name: att.employee_name || emp?.name || 'Unknown',
+                    department: att.department || emp?.department || ''
+                };
+            }) as unknown as AttendanceRecord[]);
 
             setLeaves((leaveData || []).map(leave => ({
                 ...leave,

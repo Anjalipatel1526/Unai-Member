@@ -87,7 +87,7 @@ export const Login = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-blend-soft-light relative overflow-hidden">
+        <div className="min-h-screen w-full flex-1 bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-blend-soft-light relative overflow-hidden">
             {/* Background design elements */}
             <div className="absolute top-0 left-1/2 -ml-[30rem] -mt-[15rem] w-[60rem] h-[60rem] rounded-full bg-primary-100/50 mix-blend-multiply blur-3xl opacity-70 pointer-events-none" />
             <div className="absolute top-0 right-1/2 ml-[10rem] -mt-[15rem] w-[50rem] h-[50rem] rounded-full bg-indigo-100/50 mix-blend-multiply blur-3xl opacity-70 pointer-events-none" />

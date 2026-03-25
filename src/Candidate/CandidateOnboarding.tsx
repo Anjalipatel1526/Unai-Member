@@ -186,7 +186,8 @@ export default function CandidateOnboarding() {
                                                 <option>Developer</option><option>Full Stack Developer</option>
                                                 <option>Frontend</option><option>Backend</option>
                                                 <option>UI/UX Design</option><option>Automation Testing</option>
-                                                <option>Manual Testing</option><option>Marketing</option><option>HR</option>
+                                                <option>Manual Testing</option><option>Marketing</option>
+                                                <option>HR</option><option>Sales</option><option>Finance</option>
                                             </select>
                                         </div>
                                     </div>
