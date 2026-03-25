@@ -20,6 +20,8 @@ export interface AttendanceRecord {
     check_in: string;
     check_out: string;
     status: 'Present' | 'Absent' | 'Late';
+    displayDate?: string;
+    working_hours?: string;
 }
 
 export interface LeaveRequest {

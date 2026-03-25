@@ -38,11 +38,22 @@ export function useHRData() {
             setEmployees(empData as Employee[]);
 
             setAttendance((attData || []).map(att => {
-                const emp = (empData || []).find(e => e.id === att.employee_id);
+                // Try matching by ID first, then by Name (resilient lookup)
+                const emp = (empData || []).find(e => e.id === att.employee_id) ||
+                    (empData || []).find(e => e.name === att.employee_name);
+
+                // Format date for display: dd/mm/yy
+                let displayDate = att.date;
+                if (att.date && att.date.includes('-')) {
+                    const [y, m, d] = att.date.split('-');
+                    displayDate = `${d}/${m}/${y.substring(2)}`;
+                }
+
                 return {
                     ...att,
                     employee_name: att.employee_name || emp?.name || 'Unknown',
-                    department: att.department || emp?.department || ''
+                    department: att.department || emp?.department || 'Unknown',
+                    displayDate // Added for UI
                 };
             }) as unknown as AttendanceRecord[]);
 

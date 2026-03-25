@@ -31,6 +31,14 @@ export const Login = () => {
             return;
         }
 
+        // 1.6. Check HR Assistant Hardcoded Credentials
+        if (email === 'hr@unaimember.com' && password === 'HR2026') {
+            localStorage.setItem('userAuth', JSON.stringify({ role: 'assistant-hr', email }));
+            navigate('/assistant-hr/dashboard');
+            setIsLoading(false);
+            return;
+        }
+
         // 2. Check Supabase for Employee Login
         try {
             const { data: empData } = await supabase

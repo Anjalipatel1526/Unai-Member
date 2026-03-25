@@ -8,8 +8,19 @@ import { Avatar } from '../components/Avatar';
 
 export function Attendance() {
     const { attendance, employees } = useCompanyData();
-    const [isCheckedIn, setIsCheckedIn] = useState(false);
     const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+    const [selectedDept, setSelectedDept] = useState('All Departments');
+    const [selectedDate, setSelectedDate] = useState('');
+
+    const filteredAttendance = React.useMemo(() => {
+        return attendance.filter(record => {
+            const emp = employees.find(e => e.id === record.employee_id) || employees.find(e => e.name === record.employee_name);
+            const dept = record.department || emp?.department || 'N/A';
+            const deptMatch = selectedDept === 'All Departments' || dept.trim().toLowerCase() === selectedDept.trim().toLowerCase();
+            const dateMatch = !selectedDate || record.date === selectedDate;
+            return deptMatch && dateMatch;
+        });
+    }, [attendance, employees, selectedDept, selectedDate]);
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 w-full">
@@ -23,115 +34,110 @@ export function Attendance() {
                         <Clock size={16} className="text-indigo-600" />
                         {currentTime}
                     </div>
-                    <button
-                        onClick={() => setIsCheckedIn(!isCheckedIn)}
-                        className={`inline-flex items-center gap-2 rounded-lg px-4 py-1.5 text-sm font-semibold shadow-sm transition-colors ${isCheckedIn
-                            ? 'bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200'
-                            : 'bg-indigo-600 text-white hover:bg-indigo-500'
-                            }`}
-                    >
-                        {isCheckedIn ? 'Check Out' : 'Check In'}
-                    </button>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                {/* Calendar View Placeholder */}
-                <Card className="lg:col-span-1">
-                    <CardHeader>
-                        <CardTitle>Calendar View</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-center p-6 border-2 border-dashed border-gray-100 rounded-xl">
-                            <Calendar className="h-10 w-10 mx-auto text-gray-300 mb-2" />
-                            <p className="text-sm text-gray-500">Monthly Calendar Grid Component</p>
-                        </div>
-                        <div className="mt-6 space-y-3">
-                            <h4 className="text-sm font-semibold text-gray-900 border-b border-gray-100 pb-2">Today's Summary</h4>
-                            <div className="flex justify-between text-sm">
-                                <span className="text-gray-500">Present</span>
-                                <span className="font-medium text-emerald-600">
-                                    {attendance.filter(a => a.date === new Date().toISOString().split('T')[0] && (a.status === 'Present' || a.status === 'Late')).length}
-                                </span>
-                            </div>
-                            <div className="flex justify-between text-sm">
-                                <span className="text-gray-500">Absent</span>
-                                <span className="font-medium text-rose-600">
-                                    {attendance.filter(a => a.date === new Date().toISOString().split('T')[0] && a.status === 'Absent').length}
-                                </span>
-                            </div>
-                            <div className="flex justify-between text-sm">
-                                <span className="text-gray-500">Late</span>
-                                <span className="font-medium text-amber-600">
-                                    {attendance.filter(a => a.date === new Date().toISOString().split('T')[0] && a.is_late).length}
-                                </span>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
+            {/* Top Filter Bar */}
+            <Card className="border-indigo-100 bg-indigo-50/20 p-4">
+                <div className="flex flex-col md:flex-row items-end gap-4">
+                    <div className="flex-1 space-y-1.5 w-full">
+                        <label className="text-xs font-bold text-indigo-900 uppercase tracking-wider flex items-center gap-2">
+                            <Filter size={14} /> Department
+                        </label>
+                        <select
+                            value={selectedDept}
+                            onChange={(e) => setSelectedDept(e.target.value)}
+                            className="w-full rounded-xl border-none ring-1 ring-gray-200 py-2.5 px-3 text-sm focus:ring-2 focus:ring-indigo-600 transition-all outline-none bg-white"
+                        >
+                            <option>All Departments</option>
+                            <option>Developer</option>
+                            <option>Full Stack Developer</option>
+                            <option>Frontend</option>
+                            <option>Backend</option>
+                            <option>UI/UX Design</option>
+                            <option>Automation Testing</option>
+                            <option>Manual Testing</option>
+                            <option>Marketing</option>
+                            <option>HR</option>
+                            <option>Sales</option>
+                            <option>Finance</option>
+                        </select>
+                    </div>
+                    <div className="flex-1 space-y-1.5 w-full">
+                        <label className="text-xs font-bold text-indigo-900 uppercase tracking-wider flex items-center gap-2">
+                            <Calendar size={14} /> Date
+                        </label>
+                        <input
+                            type="date"
+                            value={selectedDate}
+                            onChange={(e) => setSelectedDate(e.target.value)}
+                            className="w-full rounded-xl border-none ring-1 ring-gray-200 py-2.5 px-3 text-sm focus:ring-2 focus:ring-indigo-600 transition-all outline-none bg-white"
+                        />
+                    </div>
+                    <div className="flex-[0.5] w-full">
+                        <button
+                            onClick={() => { setSelectedDept('All Departments'); setSelectedDate(''); }}
+                            className="w-full py-2.5 px-4 bg-white hover:bg-gray-50 text-indigo-600 border border-indigo-100 rounded-xl text-sm font-bold transition-colors shadow-sm"
+                        >
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </Card>
 
-                {/* Attendance Table */}
-                <Card className="lg:col-span-3">
-                    <CardHeader className="flex flex-row items-center justify-between border-b border-gray-100 pb-4">
-                        <CardTitle>Attendance Records</CardTitle>
-                        <div className="flex gap-2">
-                            <button className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                <Filter size={16} />
-                                Filters
-                            </button>
-                            <button className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
-                                <Download size={16} />
-                                Export
-                            </button>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="p-0">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Date</TableHead>
-                                    <TableHead>Employee</TableHead>
-                                    <TableHead>Check In</TableHead>
-                                    <TableHead>Check Out</TableHead>
-                                    <TableHead>Status</TableHead>
+            {/* Attendance Table */}
+            <Card className="p-0 overflow-hidden">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Date</TableHead>
+                            <TableHead>Employee</TableHead>
+                            <TableHead>Department</TableHead>
+                            <TableHead>Check In</TableHead>
+                            <TableHead>Check Out</TableHead>
+                            <TableHead>Working Hours</TableHead>
+                            <TableHead>Status</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {filteredAttendance.map((record: any) => {
+                            const emp = employees.find((e: any) => e.id === record.employee_id) || employees.find((e: any) => e.name === record.employee_name);
+                            const displayName = record.employee_name || emp?.name || 'Unknown';
+                            const displayDept = emp?.department || record.department || 'N/A';
+
+                            let displayDate = record.date;
+                            if (record.date && record.date.includes('-')) {
+                                const [y, m, d] = record.date.split('-');
+                                displayDate = `${d}/${m}/${y.substring(2)}`;
+                            }
+
+                            return (
+                                <TableRow key={record.id}>
+                                    <TableCell className="text-xs text-gray-500 font-medium">{displayDate}</TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-3 text-sm">
+                                            <Avatar src={emp?.avatar} alt={displayName} className="h-8 w-8" />
+                                            <div className="font-bold text-gray-900">{displayName}</div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="text-gray-500 text-sm">{displayDept}</TableCell>
+                                    <TableCell className="font-medium text-gray-900 text-sm whitespace-nowrap">{record.check_in}</TableCell>
+                                    <TableCell className="font-medium text-gray-900 text-sm whitespace-nowrap">{record.check_out || '—'}</TableCell>
+                                    <TableCell className="font-semibold text-gray-700 text-sm">{record.working_hours ? `${record.working_hours}h` : '—'}</TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-2 scale-90 origin-left">
+                                            <Badge variant={record.status === 'Present' ? 'success' : record.status === 'Half Day' ? 'info' : 'danger'}>
+                                                {record.status}
+                                            </Badge>
+                                            {record.is_late && <Badge variant="warning">Late</Badge>}
+                                        </div>
+                                    </TableCell>
                                 </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {attendance.map((record: any) => {
-                                    const emp = employees.find((e: any) => e.id === record.employee_id);
-                                    const displayName = record.employee_name || emp?.name || 'Unknown';
-                                    const displayDept = emp?.department || record.department || 'N/A';
-
-                                    return (
-                                        <TableRow key={record.id}>
-                                            <TableCell className="text-sm text-gray-500">{record.date}</TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-3">
-                                                    <Avatar src={emp?.avatar} alt={displayName} className="h-8 w-8" />
-                                                    <div>
-                                                        <div className="font-medium text-gray-900">{displayName}</div>
-                                                        <div className="text-xs text-gray-500">{displayDept}</div>
-                                                    </div>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="font-medium text-gray-900">{record.check_in}</TableCell>
-                                            <TableCell className="font-medium text-gray-900">{record.check_out}</TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-2">
-                                                    <Badge variant={record.status === 'Present' ? 'success' : 'danger'}>
-                                                        {record.status}
-                                                    </Badge>
-                                                    {record.is_late && <Badge variant="warning">Late</Badge>}
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    )
-                                })}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
-            </div>
+                            )
+                        })}
+                    </TableBody>
+                </Table>
+            </Card>
         </div>
     );
 }
