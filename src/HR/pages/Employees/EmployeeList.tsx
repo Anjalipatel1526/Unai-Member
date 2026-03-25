@@ -1,11 +1,11 @@
-import { Plus, Search, Filter, Eye, UserPlus, Link as LinkIcon, Check } from 'lucide-react';
+import { Plus, Search, Filter, Eye, UserPlus, Link as LinkIcon, Check, KeyRound, Mail, Lock } from 'lucide-react';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
 import { Badge } from '../../components/Badge';
 import { Avatar } from '../../components/Avatar';
 import { Table, TableHeader, TableRow, TableCell, TableHead, TableBody } from '../../components/Table';
 import { Modal } from '../../components/Modal';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useHRData } from '../../hooks/useHRData';
 import { supabase } from '../../../lib/supabase';
@@ -14,6 +14,29 @@ export function EmployeeList() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { employees, loading, refreshData } = useHRData();
     const [isSaving, setIsSaving] = useState(false);
+    const [credentials, setCredentials] = useState<any[]>([]);
+    const [isCredModalOpen, setIsCredModalOpen] = useState(false);
+    const [viewingCred, setViewingCred] = useState<any>(null);
+
+    // Fetch employee credentials
+    useEffect(() => {
+        const fetchCreds = async () => {
+            const { data } = await supabase
+                .from('employee_credentials')
+                .select('*')
+                .eq('company_id', 'COMP_001');
+            if (data) setCredentials(data);
+        };
+        fetchCreds();
+    }, []);
+
+    const getCredential = (empId: string) => credentials.find(c => c.employee_id === empId || c.employee_name === employees.find(e => e.id === empId)?.name);
+
+    const openCredModal = (emp: any) => {
+        const cred = getCredential(emp.id);
+        setViewingCred(cred || null);
+        setIsCredModalOpen(true);
+    };
 
     // Form State
     const [formData, setFormData] = useState({
@@ -143,9 +166,12 @@ export function EmployeeList() {
                                         <Badge variant={emp.status === 'Active' ? 'success' : 'warning'}>{emp.status}</Badge>
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <Link to={`/assistant-hr/employees/${emp.id}`}>
-                                            <Button variant="ghost" size="sm" icon={<Eye size={16} />}>View</Button>
-                                        </Link>
+                                        <div className="flex items-center justify-end gap-1">
+                                            <Link to={`/assistant-hr/employees/${emp.id}`}>
+                                                <Button variant="ghost" size="sm" icon={<Eye size={16} />}>View</Button>
+                                            </Link>
+                                            <Button variant="ghost" size="sm" icon={<KeyRound size={16} />} onClick={() => openCredModal(emp)}>Credentials</Button>
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -244,6 +270,59 @@ export function EmployeeList() {
                         </div>
                     </div>
                 </form>
+            </Modal>
+
+            {/* View Credentials Modal (Read-Only) */}
+            <Modal
+                isOpen={isCredModalOpen}
+                onClose={() => setIsCredModalOpen(false)}
+                title="Employee Credentials"
+                footer={
+                    <Button variant="outline" onClick={() => setIsCredModalOpen(false)}>Close</Button>
+                }
+            >
+                {viewingCred ? (
+                    <div className="space-y-4">
+                        <div className="p-4 bg-indigo-50/50 rounded-xl border border-indigo-100/50">
+                            <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Employee</p>
+                            <p className="text-sm font-semibold text-gray-900">{viewingCred.employee_name}</p>
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Work Email</label>
+                            <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-xl">
+                                <Mail size={14} className="text-gray-400" />
+                                <span className="text-sm font-medium text-gray-900 select-all">{viewingCred.work_email}</span>
+                            </div>
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Password</label>
+                            <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-xl">
+                                <Lock size={14} className="text-gray-400" />
+                                <span className="text-sm font-medium text-gray-900 select-all">{viewingCred.password}</span>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Department</label>
+                                <p className="text-sm text-gray-700">{viewingCred.department || '—'}</p>
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Designation</label>
+                                <p className="text-sm text-gray-700">{viewingCred.designation || '—'}</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2 p-3 bg-emerald-50 rounded-xl">
+                            <Badge variant="success">Active</Badge>
+                            <span className="text-xs text-emerald-700">Created: {new Date(viewingCred.created_at).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="text-center py-8">
+                        <KeyRound size={32} className="mx-auto mb-2 text-gray-300" />
+                        <p className="text-sm text-gray-400">No credentials assigned to this employee yet.</p>
+                        <p className="text-xs text-gray-400 mt-1">The Company Owner needs to create login credentials first.</p>
+                    </div>
+                )}
             </Modal>
         </div>
     );

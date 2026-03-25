@@ -1,12 +1,29 @@
-import React from 'react';
-import { Bell, ChevronDown } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Bell, ChevronDown, LogOut, User, Settings } from 'lucide-react';
 import { Avatar } from '../components/Avatar';
 import { Dropdown, DropdownItem } from '../components/Dropdown';
 import { useNavigate } from 'react-router-dom';
-import { employeeProfile } from '../data/mockData';
 
 export function Header() {
     const navigate = useNavigate();
+
+    // Get logged-in employee data from localStorage
+    const getAuthData = () => {
+        try {
+            const auth = localStorage.getItem('userAuth');
+            if (auth) {
+                const parsed = JSON.parse(auth);
+                return {
+                    name: parsed.employeeName || 'Employee',
+                    designation: parsed.designation || 'Employee',
+                    email: parsed.email || '',
+                };
+            }
+        } catch { }
+        return { name: 'Employee', designation: 'Employee', email: '' };
+    };
+
+    const authData = getAuthData();
 
     const handleLogout = () => {
         localStorage.removeItem('userAuth');
@@ -14,40 +31,41 @@ export function Header() {
     };
 
     return (
-        <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-gray-100 bg-white/80 backdrop-blur-md px-4 md:px-6 w-full">
+        <header className="h-16 bg-white border-b border-gray-100 px-6 flex items-center justify-between sticky top-0 z-40">
             <div className="flex items-center gap-3">
-                <h1 className="text-lg font-bold text-gray-900 hidden sm:block">UNAI Tech Organization</h1>
-                <span className="hidden md:inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-100">
+                <h2 className="text-sm font-bold text-gray-900">UNAI Tech Organization</h2>
+                <span className="hidden sm:inline-block px-2.5 py-0.5 text-xs font-bold text-indigo-700 bg-indigo-50 rounded-full border border-indigo-100">
                     Employee Portal
                 </span>
             </div>
 
             <div className="flex items-center gap-4">
-                <button
-                    onClick={() => alert('Notifications coming soon')}
-                    className="relative p-2 text-gray-500 hover:bg-gray-100 rounded-xl transition-colors"
-                >
-                    <Bell size={20} />
-                    <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white" />
+                <button className="relative p-2 rounded-xl hover:bg-gray-50 transition-colors">
+                    <Bell size={18} className="text-gray-500" />
+                    <span className="absolute top-1 right-1 h-2.5 w-2.5 bg-rose-500 rounded-full border-2 border-white" />
                 </button>
-
-                <div className="h-8 w-px bg-gray-100 mx-2" />
 
                 <Dropdown
                     trigger={
                         <button className="flex items-center gap-3 group outline-none">
                             <div className="text-right hidden md:block">
-                                <p className="text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">{employeeProfile.name || 'Employee'}</p>
-                                <p className="text-xs text-gray-500">{employeeProfile.designation || 'Employee'}</p>
+                                <p className="text-sm font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">{authData.name}</p>
+                                <p className="text-xs text-gray-500">{authData.designation}</p>
                             </div>
-                            <Avatar size="sm" alt={employeeProfile.name || 'Employee'} className="ring-2 ring-indigo-50 group-hover:ring-indigo-100 transition-all" />
+                            <Avatar size="sm" alt={authData.name} className="ring-2 ring-indigo-50 group-hover:ring-indigo-100 transition-all" />
                             <ChevronDown size={14} className="text-gray-400 group-hover:text-indigo-500 transition-colors" />
                         </button>
                     }
                 >
-                    <DropdownItem onClick={() => navigate('/employee/profile')}>My Profile</DropdownItem>
-                    <DropdownItem onClick={() => navigate('/employee/settings')}>Settings</DropdownItem>
-                    <DropdownItem variant="danger" onClick={handleLogout}>Logout</DropdownItem>
+                    <DropdownItem onClick={() => navigate('/employee/profile')}>
+                        <span className="flex items-center gap-2"><User size={14} /> My Profile</span>
+                    </DropdownItem>
+                    <DropdownItem onClick={() => navigate('/employee/settings')}>
+                        <span className="flex items-center gap-2"><Settings size={14} /> Settings</span>
+                    </DropdownItem>
+                    <DropdownItem onClick={handleLogout} variant="danger">
+                        <span className="flex items-center gap-2"><LogOut size={14} /> Logout</span>
+                    </DropdownItem>
                 </Dropdown>
             </div>
         </header>

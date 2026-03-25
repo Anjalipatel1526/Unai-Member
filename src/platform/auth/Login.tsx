@@ -31,7 +31,35 @@ export const Login = () => {
             return;
         }
 
-        // 2. Otherwise, check Supabase for Client Login
+        // 2. Check Supabase for Employee Login
+        try {
+            const { data: empData } = await supabase
+                .from('employee_credentials')
+                .select('*')
+                .eq('work_email', email)
+                .eq('password', password)
+                .eq('status', 'active')
+                .single();
+
+            if (empData) {
+                localStorage.setItem('userAuth', JSON.stringify({
+                    role: 'employee',
+                    email: empData.work_email,
+                    employeeId: empData.employee_id || empData.id,
+                    employeeName: empData.employee_name,
+                    companyId: empData.company_id,
+                    department: empData.department,
+                    designation: empData.designation,
+                }));
+                navigate('/employee/dashboard');
+                setIsLoading(false);
+                return;
+            }
+        } catch (err) {
+            // Not found in employee_credentials, continue to client check
+        }
+
+        // 3. Otherwise, check Supabase for Client Login
         try {
             const { data, error: dbError } = await supabase
                 .from('clients')
@@ -41,15 +69,12 @@ export const Login = () => {
                 .single();
 
             if (data) {
-                // Client found!
                 localStorage.setItem('userAuth', JSON.stringify({
                     role: 'client',
                     email: data.admin_email,
                     clientId: data.id,
                     companyName: data.name
                 }));
-                // Navigate to a client specific dashboard (we'll route them appropriately)
-                // For now, if they log in as client, we can send them to a blank placeholder
                 navigate('/client-portal');
             } else {
                 setError('Invalid email or password');
